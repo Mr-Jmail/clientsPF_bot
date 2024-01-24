@@ -7,17 +7,20 @@ const { Telegraf, Scenes, session } = require("telegraf")
 const bot = new Telegraf(process.env.botToken)
 
 const addReminderScene = require("./scenes/addReminderScene")
+const getRemindersScene = require("./scenes/getRemindersScene")
 
-const stage = new Scenes.Stage([addReminderScene])
+const stage = new Scenes.Stage([addReminderScene, getRemindersScene])
 
 bot.use(session())
 bot.use(stage.middleware())
 
 bot.start(ctx => startReplier(ctx))
 
-addReminderToDb("третье напоминание", "13.12.2024", "В работе")
+// addReminderToDb("третье напоминание", "13.12.2024", "В работе")
 // ;(async function() {console.log(await getReminders("23.01.2024"))})()
 
 bot.command("addReminder", ctx => ctx.scene.enter("addReminderScene"))
+
+bot.command("getReminders", ctx => ctx.scene.enter("getRemindersScene"))
 
 bot.launch()

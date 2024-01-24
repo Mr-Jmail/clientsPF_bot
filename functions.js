@@ -8,9 +8,10 @@ async function startReplier(ctx) {
 
 async function addReminderToDb(text, date, status) {
     const dates = await getReminders()
-    const reminder = { text, status }
+    const reminder = { id: dates.nextId, text, status }
     if(!dates[date]) dates[date]= []
     dates[date].push(reminder)
+    dates.nextId += 1
     fs.writeFileSync(remindersFilePath, JSON.stringify(dates, null, 4), "utf-8")
 }
 
@@ -20,4 +21,25 @@ async function getReminders(date = "all") {
     return dates?.[date] || []
 }
 
-module.exports = { startReplier, addReminderToDb, getReminders }
+async function getReminderById(id) {
+    const dates = await getReminders()
+    console.log(dates)
+    // var dates = [{d: "d"}]
+    for (const date in dates) {
+        if(date == "nextId") continue
+        const reminder = dates[date].find(reminder => reminder.id == id)
+        if(reminder) return {id: reminder.id, text: reminder.text, status: reminder.status, date}
+    }
+    return 
+}
+
+async function editReminder(id, key, newValue) {
+    const dates = await getReminders()
+    const reminder = await getReminderById(id)
+    dates[reminder?.date]?.map(reminder => {
+        if(reminder.id == id) reminder[key] = newValue
+    })
+    fs.writeFileSync(remindersFilePath, JSON.stringify(dates, null, 4), "utf-8")
+}
+
+module.exports = { startReplier, addReminderToDb, getReminders, getReminderById, editReminder }

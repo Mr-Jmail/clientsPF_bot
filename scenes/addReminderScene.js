@@ -3,8 +3,6 @@ const date = require("date-fns");
 const { addReminderToDb, startReplier } = require("../functions");
 const cancelButton = {text: "Отмена", callback_data: "cancel"}
 
-// ПРОТЕСТИТЬ
-
 module.exports = new Scenes.WizardScene("addReminderScene", 
     ctx => {
         ctx.scene.session.state = { textOfReminder: "", dateOfReminder: "", statusOfReminder: "" }
