@@ -24,7 +24,7 @@ bot.command("addReminder", ctx => ctx.scene.enter("addReminderScene"))
 bot.command("getReminders", ctx => ctx.scene.enter("getRemindersScene"))
 
 // ;(async function() {
-cron.schedule("0 12 * * *", async function() {
+cron.schedule("0 10 * * *", async function() {
     var today = date.format(new Date(), "dd.MM.yyyy")
     var todaysReminders = await getReminders(today)
     if(todaysReminders.length == 0) return await bot.telegram.sendMessage(chatIdToSend, "На сегодня нет никаких напоминаний")
@@ -41,11 +41,11 @@ cron.schedule("0 12 * * *", async function() {
     pausedReminders.forEach((reminder, idx) => pausedRemindersText += `${idx + 1}) ${reminder.text}\n`)
     if(pausedReminders.length != 0) await bot.telegram.sendMessage(chatIdToSend, pausedRemindersText)
     
-    var todayAfter12 = new Date()
-    todayAfter12.setHours(13)
+    var todayAfter10 = new Date()
+    todayAfter10.setHours(11)
     
     for (var reminder of todaysReminders) {
-        var nextDate = await findNextDate(new Date().getDate(), todayAfter12)
+        var nextDate = await findNextDate(new Date().getDate(), todayAfter10)
         await addReminderToDb(reminder.text, nextDate, reminder.status) 
         console.log(reminder)
     }

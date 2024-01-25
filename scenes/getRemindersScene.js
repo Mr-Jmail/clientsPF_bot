@@ -1,5 +1,5 @@
 const { Scenes } = require("telegraf");
-const { getReminders, startReplier, getReminderById, editReminder, findNextDate } = require("../functions");
+const { getReminders, startReplier, getReminderById, editReminder, findNextDate, deleteReminder } = require("../functions");
 
 const getRemindersScene = new Scenes.BaseScene("getRemindersScene");
 
@@ -30,7 +30,7 @@ getRemindersScene.action(/getReminderId/ig, async ctx => {
     const backButton = {text: "Назад", callback_data: `getReminders${day}`}
     var reminder = await getReminderById(reminderId)
     if(!reminder) return await ctx.reply("К сожалению этого напоминания нет в базе", {reply_markup: {inline_keyboard: [[backButton]]}})
-    await ctx.reply(`Текст (ссылка): "${reminder.text}"\nСтатус: "${reminder.status}"\nДата следующего напоминания: ${reminder.date}`, {reply_markup: {inline_keyboard: [[{text: "Сменить статус", callback_data: `${day}changeStatus${reminderId}`}], [backButton]]}})
+    await ctx.reply(`Текст (ссылка): "${reminder.text}"\nСтатус: "${reminder.status}"\nДата следующего напоминания: ${reminder.date}`, {reply_markup: {inline_keyboard: [[{text: "Сменить статус", callback_data: `${day}changeStatus${reminderId}`}], [{text: "Удалить", callback_data: `${day}deleteReminder${reminderId}`}], [backButton]]}})
 })
 
 getRemindersScene.action(/changeStatus/ig, async ctx => {
@@ -45,6 +45,19 @@ getRemindersScene.action(/confirmedChanging/ig, async ctx => {
     var newStatus = reminder.status == "В работе" ? "На паузе" : "В работе"
     await editReminder(reminderId, "status", newStatus)
     await ctx.reply(`В напоминании "${reminder.text}" статус сменен на "${newStatus}"`, {reply_markup: {inline_keyboard: [[{text: "Назад", callback_data: `${day}getReminderId${reminderId}`}]]}})
+})
+
+getRemindersScene.action(/deleteReminder/ig, async ctx => {
+    const [day, reminderId] = ctx.callbackQuery.data.split("deleteReminder")
+    var reminder = await getReminderById(reminderId)
+    await ctx.reply(`Вы уверены, что хотите удалить напоминание "${reminder.text}"`, {reply_markup: {inline_keyboard: [[{text: "Да", callback_data: `${day}confirmedDeleteing${reminderId}`}], [{text: "Назад", callback_data: `${day}getReminderId${reminderId}`}]]}})
+})
+
+getRemindersScene.action(/confirmedDeleteing/ig, async ctx => {
+    const [day, reminderId] = ctx.callbackQuery.data.split("confirmedDeleteing")
+    var reminder = await getReminderById(reminderId)
+    await deleteReminder(reminderId)
+    await ctx.reply(`Напоминание "${reminder.text}" успешно удалено`, {reply_markup: {inline_keyboard: [[{text: "Назад", callback_data: `getReminders${day}`}]]}})
 })
 
 async function genNumberKeyboard(callback_dataBeforeI) {

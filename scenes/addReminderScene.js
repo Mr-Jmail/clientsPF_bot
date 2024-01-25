@@ -30,7 +30,7 @@ module.exports = new Scenes.WizardScene("addReminderScene",
         if(!["В работе", "На паузе"].includes(ctx?.callbackQuery?.data)) return await ctx.reply("Выберите одну из кнопок выше")
         ctx.scene.session.state.statusOfReminder = ctx.callbackQuery.data
         const { textOfReminder, dateOfReminder, statusOfReminder } = ctx.scene.session.state
-        await ctx.reply(`Отлично, напоминание с текстом "${textOfReminder}" и статусом "${statusOfReminder}" придет ${dateOfReminder} в 12:00`)
+        await ctx.reply(`Отлично, напоминание с текстом "${textOfReminder}" и статусом "${statusOfReminder}" придет ${dateOfReminder} в 10:00`)
         await ctx.reply("Перебрасываю в стартовое меню")
         await addReminderToDb(textOfReminder, dateOfReminder, statusOfReminder)
         await startReplier(ctx)
@@ -41,7 +41,7 @@ module.exports = new Scenes.WizardScene("addReminderScene",
 function isValidDate(dateString) {
     var inputDate = date.parse(dateString, 'dd.MM.yyyy', new Date());
     if (!date.isValid(inputDate)) return { error: "Введите пожалуйста дату в корректном формате" }
-    inputDate = date.set(inputDate, {hours: 12, minutes: 0})
+    inputDate = date.set(inputDate, {hours: 10, minutes: 0})
     if(!date.isAfter(inputDate, new Date())) return { error: "Напоминание за эту дату уже было отправлено. Введите дату, за которую напоминания еще не отправлялись" };
     return true;
 }

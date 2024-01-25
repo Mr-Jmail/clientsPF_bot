@@ -43,11 +43,20 @@ async function editReminder(id, key, newValue) {
     fs.writeFileSync(remindersFilePath, JSON.stringify(dates, null, 4), "utf-8")
 }
 
+async function deleteReminder(id) {
+    var reminder = await getReminderById(id)
+    var dates = await getReminders()
+    console.log(`id to delete: ${id}`);
+    dates[reminder.date] = dates[reminder.date].filter(reminder => reminder.id != id)
+    fs.writeFileSync(remindersFilePath, JSON.stringify(dates, null, 4), "utf-8")
+}
+
 async function findNextDate(dayOfMonth, startDate = new Date()) {
     const firstDayOfMonth = date.startOfMonth(startDate);
-    let nextDate = date.set(firstDayOfMonth, { date: dayOfMonth, hours: 12, minutes: 0 });
+    let nextDate = date.set(firstDayOfMonth, { date: dayOfMonth, hours: 10, minutes: 0 });
     if (!date.isAfter(nextDate, startDate)) nextDate = date.addMonths(nextDate, 1);
     return date.format(nextDate, 'dd.MM.yyyy');
 }
 
-module.exports = { startReplier, addReminderToDb, getReminders, getReminderById, editReminder, findNextDate }
+
+module.exports = { startReplier, addReminderToDb, getReminders, getReminderById, editReminder, deleteReminder, findNextDate }
