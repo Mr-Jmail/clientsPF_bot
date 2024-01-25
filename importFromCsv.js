@@ -7,6 +7,8 @@ const { findNextDate, addReminderToDb } = require("./functions");
 const fileContents = fs.readFileSync(csvPath, 'utf-8');
 const rows = []
 
+// Экспортируем таблицу в csv, если надо, то меняем кодировку с помощью команды  iconv -f MacCyrillic -t UTF-8 input.csv > output_utf8.csv, копруем csv в проект. Если надо удаляем два первых ряда (;Оплаты клиентов;;;;;;;;;\n;;;;;;;;;;) чтобы в первом ряду были заголовки. Конец
+
 csv
 .parseString(fileContents, { headers: true, delimiter: ';' })
 .on('data', async row => {
