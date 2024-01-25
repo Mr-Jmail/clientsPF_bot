@@ -2,9 +2,10 @@ const path = require("path")
 require("dotenv").config({path: path.join(__dirname, ".env")})
 const date = require("date-fns");
 const cron = require("node-cron")
-const { startReplier, getReminders } = require("./functions")
+const { startReplier, getReminders, addReminderToDb, findNextDate } = require("./functions")
 const { Telegraf, Scenes, session } = require("telegraf")
 const chatIdToSend = 207179532
+// const chatIdToSend = 1386450473
 
 const bot = new Telegraf(process.env.botToken)
 
@@ -39,5 +40,14 @@ cron.schedule("0 12 * * *", async function() {
     var pausedRemindersText = "Напоминания на паузе:\n"
     pausedReminders.forEach((reminder, idx) => pausedRemindersText += `${idx + 1}) ${reminder.text}\n`)
     if(pausedReminders.length != 0) await bot.telegram.sendMessage(chatIdToSend, pausedRemindersText)
+    
+    var todayAfter12 = new Date()
+    todayAfter12.setHours(13)
+    
+    for (var reminder of todaysReminders) {
+        var nextDate = await findNextDate(new Date().getDate(), todayAfter12)
+        await addReminderToDb(reminder.text, nextDate, reminder.status) 
+        console.log(reminder)
+    }
 })
 bot.launch()

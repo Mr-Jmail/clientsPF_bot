@@ -1,6 +1,5 @@
 const { Scenes } = require("telegraf");
-const date = require("date-fns");
-const { getReminders, startReplier, getReminderById, editReminder } = require("../functions");
+const { getReminders, startReplier, getReminderById, editReminder, findNextDate } = require("../functions");
 
 const getRemindersScene = new Scenes.BaseScene("getRemindersScene");
 
@@ -62,13 +61,6 @@ async function genNumberKeyboard(callback_dataBeforeI) {
     }
 
     return inline_keyboard
-}
-
-async function findNextDate(dayOfMonth, startDate = new Date()) {
-    const firstDayOfMonth = date.startOfMonth(startDate);
-    let nextDate = date.set(firstDayOfMonth, { date: dayOfMonth, hours: 12, minutes: 0 });
-    if (!date.isAfter(nextDate, startDate)) nextDate = date.addMonths(nextDate, 1);
-    return date.format(nextDate, 'dd.MM.yyyy');
 }
 
 async function genRemindersKeyboard(reminders, callback_dataBeforeId) {
