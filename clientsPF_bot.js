@@ -4,7 +4,7 @@ const date = require("date-fns");
 const cron = require("node-cron")
 const { startReplier, getReminders, addReminderToDb, findNextDate } = require("./functions")
 const { Telegraf, Scenes, session } = require("telegraf")
-const chatIdToSend = 207179532
+const chatIdToSend = 2122710278
 // const chatIdToSend = 1386450473
 
 const bot = new Telegraf(process.env.botToken)
@@ -23,8 +23,8 @@ bot.command("addReminder", ctx => ctx.scene.enter("addReminderScene"))
 
 bot.command("getReminders", ctx => ctx.scene.enter("getRemindersScene"))
 
-// ;(async function() {
-cron.schedule("0 12 * * *", async function() {
+;(async function() {
+// cron.schedule("0 12 * * *", async function() {
     var today = date.format(new Date(), "dd.MM.yyyy")
     var todaysReminders = await getReminders(today)
     if(todaysReminders.length == 0) return await bot.telegram.sendMessage(chatIdToSend, "На сегодня нет никаких напоминаний")
@@ -49,5 +49,6 @@ cron.schedule("0 12 * * *", async function() {
         await addReminderToDb(reminder.text, nextDate, reminder.status) 
         console.log(reminder)
     }
-})
+})()
+
 bot.launch()
