@@ -2,9 +2,9 @@ const path = require("path")
 require("dotenv").config({path: path.join(__dirname, ".env")})
 const date = require("date-fns");
 const cron = require("node-cron")
-const { startReplier, addReminderToDb, getReminders } = require("./functions")
+const { startReplier, getReminders } = require("./functions")
 const { Telegraf, Scenes, session } = require("telegraf")
-const chatIdToSend = 1386450473
+const chatIdToSend = 207179532
 
 const bot = new Telegraf(process.env.botToken)
 
