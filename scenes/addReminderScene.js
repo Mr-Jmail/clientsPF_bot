@@ -39,9 +39,10 @@ module.exports = new Scenes.WizardScene("addReminderScene",
 )
   
 function isValidDate(dateString) {
-    const inputDate = date.parse(dateString, 'dd.MM.yyyy', new Date());
+    var inputDate = date.parse(dateString, 'dd.MM.yyyy', new Date());
     if (!date.isValid(inputDate)) return { error: "Введите пожалуйста дату в корректном формате" }
-    if(!date.isAfter(inputDate, new Date())) return { error: "Дата должна быть больше текущей" };
+    inputDate = date.set(inputDate, {hours: 12, minutes: 0})
+    if(!date.isAfter(inputDate, new Date())) return { error: "Напоминание за эту дату уже было отправлено. Введите дату, за которую напоминания еще не отправлялись" };
     return true;
 }
 
