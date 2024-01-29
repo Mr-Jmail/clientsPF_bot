@@ -22,7 +22,7 @@ getRemindersScene.action(/getReminders/ig, async ctx => {
     console.log(reminders)
     var inline_keyboard = await genRemindersKeyboard(reminders, `${day}getReminderId`)
     inline_keyboard.push([backButton])
-    await ctx.reply("Выберите нужное напоминание", {reply_markup: {inline_keyboard}});
+    await ctx.reply(`Вот список всех напоминаний на ${date}`, {reply_markup: {inline_keyboard}});
 })
 
 getRemindersScene.action(/getReminderId/ig, async ctx => {

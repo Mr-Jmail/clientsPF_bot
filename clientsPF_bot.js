@@ -24,7 +24,7 @@ bot.command("addReminder", ctx => ctx.scene.enter("addReminderScene"))
 bot.command("getReminders", ctx => ctx.scene.enter("getRemindersScene"))
 
 // ;(async function() {
-cron.schedule("0 10 * * *", async function() {
+cron.schedule("0 7 * * *", async function() {
     var today = date.format(new Date(), "dd.MM.yyyy")
     var todaysReminders = await getReminders(today)
     if(todaysReminders.length == 0) return await bot.telegram.sendMessage(chatIdToSend, "На сегодня нет никаких напоминаний")
